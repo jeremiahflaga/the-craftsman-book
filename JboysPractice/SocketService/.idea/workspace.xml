@@ -12,11 +12,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SocketService.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SocketService.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SocketService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="16" column="65" lean-forward="true" selection-start-line="16" selection-start-column="44" selection-end-line="16" selection-end-column="65" />
+            <state relative-caret-position="198">
+              <caret line="14" column="39" lean-forward="true" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -24,11 +24,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SocketServiceTest.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="SocketServiceTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/SocketServiceTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="17" column="22" lean-forward="true" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
+            <state relative-caret-position="151">
+              <caret line="21" column="34" lean-forward="true" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -47,6 +47,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/SocketService.java" />
+        <option value="$PROJECT_DIR$/src/SocketServiceTest.java" />
       </list>
     </option>
   </component>
@@ -265,34 +266,34 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 08s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 09m 37s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 11s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 09m 42s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 14s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 09m 44s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 16s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 09m 50s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 18s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 09m 54s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 19s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 09m 57s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 22s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 09m 59s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 25s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 10m 01s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 26s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 10m 03s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 00m 28s.xml">
+    <history-entry file="SocketServiceTest_testOneConnection - 2017.12.23 at 22h 10m 06s.xml">
       <configuration name="SocketServiceTest.testOneConnection" configurationId="JUnit" />
     </history-entry>
   </component>
@@ -338,20 +339,20 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/SocketServiceTest.java">
+    <entry file="file://$PROJECT_DIR$/src/SocketService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
-          <caret line="17" column="22" lean-forward="true" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
+          <caret line="14" column="39" lean-forward="true" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/SocketService.java">
+    <entry file="file://$PROJECT_DIR$/src/SocketServiceTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="16" column="65" lean-forward="true" selection-start-line="16" selection-start-column="44" selection-end-line="16" selection-end-column="65" />
+        <state relative-caret-position="151">
+          <caret line="21" column="34" lean-forward="true" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

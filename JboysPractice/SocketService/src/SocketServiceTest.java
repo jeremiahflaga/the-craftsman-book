@@ -18,6 +18,11 @@ class SocketServiceTest {
     private void connect(int port) {
         try {
             Socket s = new Socket("localhost", port);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+
+            }
             s.close();
         } catch (IOException ex) {
             fail("Could not connect");
