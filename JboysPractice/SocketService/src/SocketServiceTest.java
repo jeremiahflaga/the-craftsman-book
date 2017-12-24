@@ -1,3 +1,4 @@
+import com.sun.xml.internal.ws.message.stream.StreamHeader12;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class SocketServiceTest {
 
     @Test
     public void testReceiveMessage() throws Exception {
-        socketService.serve(999, new EchoService());
+        socketService.serve(999, new EchoServer());
         Socket socket = new Socket("localhost", 999);
 
         BufferedReader bufferedReader = SocketService.getBufferedReader(socket);
@@ -66,6 +67,30 @@ class SocketServiceTest {
         printStream.println("MyMessage");
         String answer = bufferedReader.readLine();
         socket.close();
+    }
+
+    @Test
+    public void testMultiThreaded() throws Exception {
+        socketService.serve(999, new EchoServer());
+
+        Socket clientSocket1 = new Socket("localhost", 999);
+        BufferedReader bufferedReader1 = SocketService.getBufferedReader(clientSocket1);
+        PrintStream printStream1 = SocketService.getPrintStream(clientSocket1);
+
+        Socket clientSocket2 = new Socket("localhost", 999);
+        BufferedReader bufferedReader2 = SocketService.getBufferedReader(clientSocket2);
+        PrintStream printStream2 = SocketService.getPrintStream(clientSocket2);
+
+        printStream2.println("MyMessage 2");
+        String answer2 = bufferedReader2.readLine();
+        clientSocket2.close();
+
+        printStream1.println("MyMessage 1");
+        String answer1 = bufferedReader1.readLine();
+        clientSocket1.close();
+
+        assertEquals("MyMessage 2", answer2);
+        assertEquals("MyMessage 1", answer1);
     }
 
     private void connect(int port) {
@@ -92,7 +117,7 @@ class SocketServiceTest {
         }
     }
 
-    private class EchoService implements SocketServer {
+    private class EchoServer implements SocketServer {
         @Override
         public void serve(Socket socket) {
             try {

@@ -44,8 +44,7 @@ public class SocketService {
     private void acceptAndServeConnection() {
         try {
             Socket socket = serverSocket.accept();
-            itsServer.serve(socket);
-            socket.close();
+            new Thread(new ServiceRunnable(socket)).start();
             connections++;
         } catch (IOException ex) {
         }
@@ -58,5 +57,22 @@ public class SocketService {
 
     public int connections() {
         return connections;
+    }
+
+    private class ServiceRunnable implements Runnable {
+        private Socket itsSocket;
+
+        public ServiceRunnable(Socket socket) {
+            this.itsSocket = socket;
+        }
+
+        @Override
+        public void run() {
+            try {
+                itsServer.serve(itsSocket);
+                itsSocket.close();
+            } catch (IOException e) {
+            }
+        }
     }
 }
