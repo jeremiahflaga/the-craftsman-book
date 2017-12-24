@@ -1,8 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 public class SocketService {
     private ServerSocket serverSocket = null;
@@ -10,7 +9,7 @@ public class SocketService {
     private Thread serverThread = null;
     private boolean running = false;
     private SocketServer itsServer;
-    private LinkedList<Thread> serverThreads = new LinkedList<>();
+    private List<Thread> serverThreads = Collections.synchronizedList(new LinkedList<>());
 
     public void serve(int port, SocketServer server) throws  Exception {
         itsServer = server;
@@ -48,7 +47,7 @@ public class SocketService {
         try {
             Socket socket = serverSocket.accept();
             Thread serverThread = new Thread(new ServiceRunnable(socket));
-            synchronized(serverThreads) { serverThreads.add(serverThread); }
+            serverThreads.add(serverThread);
             serverThread.start();
             connections++;
         } catch (IOException ex) {
@@ -63,7 +62,7 @@ public class SocketService {
             serverThread.join();
             while (serverThreads.size() > 0) {
                 Thread thread = serverThreads.get(0);
-                synchronized(serverThreads) { serverThreads.remove(thread); }
+                serverThreads.remove(thread);
                 thread.join();
             }
         }
@@ -84,7 +83,7 @@ public class SocketService {
         public void run() {
             try {
                 itsServer.serve(itsSocket);
-                synchronized(serverThreads) { serverThreads.remove(Thread.currentThread()); }
+                serverThreads.remove(Thread.currentThread());
                 itsSocket.close();
             } catch (IOException e) {
             }
