@@ -56,8 +56,17 @@ public class SocketService {
     }
 
     public void close() throws Exception {
-        running = false;
-        serverSocket.close();
+        if (running) {
+            running = false;
+            serverSocket.close();
+
+            serverThread.join();
+            for (Iterator iterator = serverThreads.iterator(); iterator.hasNext(); ) {
+                Thread thread = (Thread) iterator.next();
+                serverThreads.remove(thread);
+                thread.join();
+            }
+        }
     }
 
     public int connections() {
