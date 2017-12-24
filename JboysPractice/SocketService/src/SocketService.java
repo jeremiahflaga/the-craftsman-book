@@ -63,7 +63,7 @@ public class SocketService {
             serverThread.join();
             for (Iterator iterator = serverThreads.iterator(); iterator.hasNext(); ) {
                 Thread thread = (Thread) iterator.next();
-                serverThreads.remove(thread);
+                //serverThreads.remove(thread);
                 thread.join();
             }
         }
