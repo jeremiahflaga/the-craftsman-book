@@ -48,7 +48,7 @@ public class SocketService {
         try {
             Socket socket = serverSocket.accept();
             Thread serverThread = new Thread(new ServiceRunnable(socket));
-            serverThreads.add(serverThread);
+            synchronized(serverThreads) { serverThreads.add(serverThread); }
             serverThread.start();
             connections++;
         } catch (IOException ex) {
@@ -62,8 +62,8 @@ public class SocketService {
 
             serverThread.join();
             while (serverThreads.size() > 0) {
-                Thread thread = (Thread) serverThreads.get(0);
-                serverThreads.remove(thread);
+                Thread thread = serverThreads.get(0);
+                synchronized(serverThreads) { serverThreads.remove(thread); }
                 thread.join();
             }
         }
@@ -84,7 +84,7 @@ public class SocketService {
         public void run() {
             try {
                 itsServer.serve(itsSocket);
-                serverThreads.remove(Thread.currentThread());
+                synchronized(serverThreads) { serverThreads.remove(Thread.currentThread()); }
                 itsSocket.close();
             } catch (IOException e) {
             }
