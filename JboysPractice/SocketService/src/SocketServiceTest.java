@@ -57,13 +57,31 @@ class SocketServiceTest {
         assertEquals("Hello", answer);
     }
 
+    @Test
+    public void testReceiveMessage() throws Exception {
+        socketService.serve(999, new EchoService());
+        Socket socket = new Socket("localhost", 999);
+
+        InputStream inputStream = socket.getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+        OutputStream outputStream = socket.getOutputStream();
+        PrintStream printStream = new PrintStream(outputStream);
+
+        printStream.println("MyMessage");
+        String answer = bufferedReader.readLine();
+        socket.close();
+
+
+    }
+
     private void connect(int port) {
         try {
             Socket s = new Socket("localhost", port);
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
-
             }
             s.close();
         } catch (IOException ex) {
@@ -77,6 +95,25 @@ class SocketServiceTest {
             try {
                 PrintStream printStream = new PrintStream(socket.getOutputStream());
                 printStream.println("Hello");
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    private class EchoService implements SocketServer {
+        @Override
+        public void serve(Socket socket) {
+            try {
+                InputStream inputStream = socket.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                OutputStream outputStream = socket.getOutputStream();
+                PrintStream printStream = new PrintStream(outputStream);
+
+                String token = bufferedReader.readLine();
+                printStream.println(token);
+
             } catch (IOException e) {
             }
         }
