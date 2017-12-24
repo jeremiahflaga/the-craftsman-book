@@ -47,9 +47,7 @@ class SocketServiceTest {
         socketService.serve(999, new HelloServer());
         Socket socket = new Socket("localhost", 999);
 
-        InputStream inputStream = socket.getInputStream();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        BufferedReader bufferedReader = SocketService.getBufferedReader(socket);
 
         String answer = bufferedReader.readLine();
         socket.close();
@@ -62,18 +60,12 @@ class SocketServiceTest {
         socketService.serve(999, new EchoService());
         Socket socket = new Socket("localhost", 999);
 
-        InputStream inputStream = socket.getInputStream();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-        OutputStream outputStream = socket.getOutputStream();
-        PrintStream printStream = new PrintStream(outputStream);
+        BufferedReader bufferedReader = SocketService.getBufferedReader(socket);
+        PrintStream printStream = SocketService.getPrintStream(socket);
 
         printStream.println("MyMessage");
         String answer = bufferedReader.readLine();
         socket.close();
-
-
     }
 
     private void connect(int port) {
@@ -104,12 +96,8 @@ class SocketServiceTest {
         @Override
         public void serve(Socket socket) {
             try {
-                InputStream inputStream = socket.getInputStream();
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                OutputStream outputStream = socket.getOutputStream();
-                PrintStream printStream = new PrintStream(outputStream);
+                BufferedReader bufferedReader = SocketService.getBufferedReader(socket);
+                PrintStream printStream = SocketService.getPrintStream(socket);
 
                 String token = bufferedReader.readLine();
                 printStream.println(token);

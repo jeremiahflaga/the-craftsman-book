@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -14,6 +14,17 @@ public class SocketService {
         serverSocket = new ServerSocket(port);
         serverThread = makeServerThread();
         serverThread.start();
+    }
+
+    public static PrintStream getPrintStream(Socket socket) throws IOException {
+        OutputStream outputStream = socket.getOutputStream();
+        return new PrintStream(outputStream);
+    }
+
+    public static BufferedReader getBufferedReader(Socket socket) throws IOException {
+        InputStream inputStream = socket.getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        return new BufferedReader(inputStreamReader);
     }
 
     private Thread makeServerThread() {
