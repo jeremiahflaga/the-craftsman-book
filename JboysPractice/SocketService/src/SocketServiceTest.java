@@ -2,10 +2,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,20 +42,20 @@ class SocketServiceTest {
         assertEquals(10, socketService.connections());
     }
 
-//    @Test
-//    public void testSendMessage() throws Exception {
-//        socketService.serve(999, new HelloServer());
-//        Socket socket = new Socket("localhost", 999);
-//
-//        InputStream inputStream = socket.getInputStream();
-//        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-//        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-//
-//        String answer = bufferedReader.readLine();
-//        socket.close();
-//
-//        assertEquals("Hello", answer);
-//    }
+    @Test
+    public void testSendMessage() throws Exception {
+        socketService.serve(999, new HelloServer());
+        Socket socket = new Socket("localhost", 999);
+
+        InputStream inputStream = socket.getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+        String answer = bufferedReader.readLine();
+        socket.close();
+
+        assertEquals("Hello", answer);
+    }
 
     private void connect(int port) {
         try {
@@ -71,6 +68,17 @@ class SocketServiceTest {
             s.close();
         } catch (IOException ex) {
             fail("Could not connect");
+        }
+    }
+
+    private class HelloServer implements SocketServer {
+        @Override
+        public void serve(Socket socket) {
+            try {
+                PrintStream printStream = new PrintStream(socket.getOutputStream());
+                printStream.println("Hello");
+            } catch (IOException e) {
+            }
         }
     }
 }
