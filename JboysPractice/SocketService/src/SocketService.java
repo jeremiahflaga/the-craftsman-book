@@ -65,6 +65,8 @@ public class SocketService {
                 serverThreads.remove(thread);
                 thread.join();
             }
+        } else {
+            serverSocket.close();
         }
     }
 
