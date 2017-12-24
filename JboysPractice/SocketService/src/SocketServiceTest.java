@@ -15,6 +15,16 @@ class SocketServiceTest {
         assertEquals(1, ss.connections());
     }
 
+    @Test
+    public void testManyConnections() throws Exception {
+        SocketService socketService = new SocketService();
+        socketService.serve(999);
+        for (int i = 0; i < 10; i++)
+            connect(999);
+        socketService.close();
+        assertEquals(10, socketService.connections());
+    }
+
     private void connect(int port) {
         try {
             Socket s = new Socket("localhost", port);
