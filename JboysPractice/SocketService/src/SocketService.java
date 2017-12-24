@@ -84,6 +84,7 @@ public class SocketService {
         public void run() {
             try {
                 itsServer.serve(itsSocket);
+                serverThreads.remove(Thread.currentThread());
                 itsSocket.close();
             } catch (IOException e) {
             }
