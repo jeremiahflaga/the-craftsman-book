@@ -6,6 +6,7 @@ public class SocketService {
     private ServerSocket serverSocket = null;
     private int connections = 0;
     private Thread serverThread = null;
+    private boolean running = false;
 
     public void serve(int port) throws  Exception {
         serverSocket = new ServerSocket(port);
@@ -13,12 +14,15 @@ public class SocketService {
                 new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            Socket socket = serverSocket.accept();
-                            socket.close();
-                            connections++;
-                        } catch (IOException ex) {
+                        running = true;
+                        while (running) {
+                            try {
+                                Socket socket = serverSocket.accept();
+                                socket.close();
+                                connections++;
+                            } catch (IOException ex) {
 
+                            }
                         }
                     }
                 }
@@ -27,6 +31,7 @@ public class SocketService {
     }
 
     public void close() throws IOException {
+        running = false;
         serverSocket.close();
     }
 
