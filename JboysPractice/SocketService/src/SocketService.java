@@ -12,25 +12,32 @@ public class SocketService {
     public void serve(int port, SocketServer server) throws  Exception {
         itsServer = server;
         serverSocket = new ServerSocket(port);
-        serverThread = new Thread(
+        serverThread = makeServerThread();
+        serverThread.start();
+    }
+
+    private Thread makeServerThread() {
+        return new Thread(
                 new Runnable() {
                     @Override
                     public void run() {
                         running = true;
                         while (running) {
-                            try {
-                                Socket socket = serverSocket.accept();
-                                itsServer.serve(socket);
-                                socket.close();
-                                connections++;
-                            } catch (IOException ex) {
-
-                            }
+                            acceptAndServeConnection();
                         }
                     }
                 }
         );
-        serverThread.start();
+    }
+
+    private void acceptAndServeConnection() {
+        try {
+            Socket socket = serverSocket.accept();
+            itsServer.serve(socket);
+            socket.close();
+            connections++;
+        } catch (IOException ex) {
+        }
     }
 
     public void close() throws IOException {
