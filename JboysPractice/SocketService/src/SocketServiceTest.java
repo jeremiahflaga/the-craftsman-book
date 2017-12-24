@@ -24,7 +24,7 @@ class SocketServiceTest {
     }
 
     @AfterEach
-    public void cleanup() throws IOException {
+    public void cleanup() throws Exception {
         socketService.close();
     }
 
@@ -93,6 +93,18 @@ class SocketServiceTest {
         assertEquals("MyMessage 1", answer1);
     }
 
+    @Test
+    public void testAllServerClosed() throws Exception {
+        socketService.serve(999, new WaitThenClose());
+
+        Socket clientSocket = new Socket("localhost", 999);
+        Thread.sleep(20);
+
+        assertEquals(1, WaitThenClose.threadsActive);
+        socketService.close();
+        assertEquals(0, WaitThenClose.threadsActive);
+    }
+
     private void connect(int port) {
         try {
             Socket s = new Socket("localhost", port);
@@ -103,32 +115,6 @@ class SocketServiceTest {
             s.close();
         } catch (IOException ex) {
             fail("Could not connect");
-        }
-    }
-
-    private class HelloServer implements SocketServer {
-        @Override
-        public void serve(Socket socket) {
-            try {
-                PrintStream printStream = new PrintStream(socket.getOutputStream());
-                printStream.println("Hello");
-            } catch (IOException e) {
-            }
-        }
-    }
-
-    private class EchoServer implements SocketServer {
-        @Override
-        public void serve(Socket socket) {
-            try {
-                BufferedReader bufferedReader = SocketService.getBufferedReader(socket);
-                PrintStream printStream = SocketService.getPrintStream(socket);
-
-                String token = bufferedReader.readLine();
-                printStream.println(token);
-
-            } catch (IOException e) {
-            }
         }
     }
 }
