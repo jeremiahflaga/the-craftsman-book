@@ -1,5 +1,8 @@
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SMCRemoteClientTests {
@@ -23,5 +26,19 @@ public class SMCRemoteClientTests {
         client.setFilename("thisFileDoesNotExist");
         boolean prepared = client.prepareFile();
         assertEquals(false, prepared);
+    }
+
+    @Test
+    public void testCountBytesInFile() throws Exception {
+        File file = new File("testFile");
+        FileOutputStream stream = new FileOutputStream(file);
+        stream.write("some text".getBytes());
+        stream.close();
+
+        client.setFilename("testfile");
+        boolean prepared = client.prepareFile();
+
+        assertTrue(prepared);
+        assertEquals(9, client.getFileLength());
     }
 }

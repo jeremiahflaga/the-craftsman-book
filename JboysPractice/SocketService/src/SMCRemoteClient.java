@@ -2,6 +2,7 @@ import java.io.File;
 
 public class SMCRemoteClient {
     private String itsFilename;
+    private long itsFileLength;
 
     public boolean parseCommandLine(String[] args) {
         try {
@@ -23,9 +24,14 @@ public class SMCRemoteClient {
     public boolean prepareFile() {
         File file = new File(itsFilename);
         if (file.exists()) {
+            itsFileLength = file.length();
             return true;
         } else {
             return false;
         }
+    }
+
+    public long getFileLength() {
+        return itsFileLength;
     }
 }
