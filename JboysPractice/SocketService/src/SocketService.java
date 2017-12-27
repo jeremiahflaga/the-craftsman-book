@@ -5,7 +5,6 @@ import java.util.*;
 
 public class SocketService {
     private ServerSocket serverSocket = null;
-    private int connections = 0;
     private Thread serverThread = null;
     private boolean running = false;
     private SocketServer itsServer;
@@ -49,7 +48,6 @@ public class SocketService {
             Thread serverThread = new Thread(new ServiceRunnable(socket));
             serverThreads.add(serverThread);
             serverThread.start();
-            connections++;
         } catch (IOException ex) {
         }
     }
@@ -68,10 +66,6 @@ public class SocketService {
         } else {
             serverSocket.close();
         }
-    }
-
-    public int connections() {
-        return connections;
     }
 
     private class ServiceRunnable implements Runnable {

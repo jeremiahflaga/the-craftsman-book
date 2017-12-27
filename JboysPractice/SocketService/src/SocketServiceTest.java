@@ -32,7 +32,7 @@ class SocketServiceTest {
     public void testOneConnection() throws Exception {
         socketService.serve(999, connectionsCounter);
         connect(999);
-        assertEquals(1, socketService.connections());
+        assertEquals(1, connections);
     }
 
     @Test
@@ -40,7 +40,7 @@ class SocketServiceTest {
         socketService.serve(999, connectionsCounter);
         for (int i = 0; i < 10; i++)
             connect(999);
-        assertEquals(10, socketService.connections());
+        assertEquals(10, connections);
     }
 
     @Test
