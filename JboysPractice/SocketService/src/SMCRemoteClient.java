@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
 
 public class SMCRemoteClient {
     private String itsFilename;
@@ -33,5 +35,14 @@ public class SMCRemoteClient {
 
     public long getFileLength() {
         return itsFileLength;
+    }
+
+    public boolean connect() {
+        try {
+            Socket s = new Socket("localhost", 9000);
+            return true;
+        } catch (IOException e) {
+        }
+        return false;
     }
 }

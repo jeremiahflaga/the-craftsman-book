@@ -1,3 +1,4 @@
+import javax.sound.sampled.Port;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,6 +10,12 @@ public class SocketService {
     private boolean running = false;
     private SocketServer itsServer;
     private List<Thread> serverThreads = Collections.synchronizedList(new LinkedList<>());
+
+    public SocketService() {}
+
+    public SocketService(int port, SocketServer server) throws Exception {
+        serve(port, server);
+    }
 
     public void serve(int port, SocketServer server) throws  Exception {
         itsServer = server;
