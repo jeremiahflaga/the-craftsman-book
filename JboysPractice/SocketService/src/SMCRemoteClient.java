@@ -1,8 +1,13 @@
 public class SMCRemoteClient {
     private String itsFilename;
 
-    public void parseCommandLine(String[] args) {
-        itsFilename = args[0];
+    public boolean parseCommandLine(String[] args) {
+        try {
+            itsFilename = args[0];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return false;
+        }
+        return true;
     }
 
     public String filename() {
