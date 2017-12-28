@@ -64,10 +64,15 @@ public class SMCRemoteClient {
         return connectionStatus;
     }
 
-    public boolean sendFile() {
+    public boolean compileFile() {
         boolean fileSent = false;
+        char buffer[] = new char[(int) itsFileLength];
         try {
-            writeSendFileCommand();
+            fileReader.read(buffer);
+            CompileFileTransaction compileFileTransaction =
+                    new CompileFileTransaction(itsFilename, buffer);
+            socketsOutputStream.writeObject(compileFileTransaction);
+            socketsOutputStream.flush();
             fileSent = true;
         } catch (Exception ex) {
             fileSent = false;

@@ -65,13 +65,13 @@ public class SMCRemoteClientTests {
     }
 
     @Test
-    public void testSendFile() throws Exception {
+    public void testCompileFile() throws Exception {
         File file = createTestFile("testSendFile", "I am sending this file.");
         client.setFilename("testSendFile");
 
         assertTrue(client.connect());
         assertTrue(client.prepareFile());
-        assertTrue(client.sendFile());
+        assertTrue(client.compileFile());
 
         Thread.sleep(50);
 
