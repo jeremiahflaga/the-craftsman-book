@@ -8,16 +8,16 @@ public class TestSMCRServer implements SocketServer {
     public char[] content;
     public String command;
 
-    private PrintStream outputStream;
+    private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
     @Override
     public void serve(Socket socket) {
         try {
-            outputStream = new PrintStream(socket.getOutputStream());
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
             //inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            outputStream.println("SMCR Test Server");
+            outputStream.writeObject("SMCR Test Server");
             outputStream.flush();
             parse(inputStream.readObject());
         } catch (Exception e) {
@@ -32,6 +32,11 @@ public class TestSMCRServer implements SocketServer {
                 content = compileFileTransaction.getContents();
                 fileLength = content.length;
                 fileReceived = true;
+
+                CompilerResultsTransaction compilerResultsTransaction =
+                        new CompilerResultsTransaction("resultFile.java");
+                outputStream.writeObject(compileFileTransaction);
+                outputStream.flush();
             }
         }
     }

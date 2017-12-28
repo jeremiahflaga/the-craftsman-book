@@ -81,6 +81,10 @@ public class SMCRemoteClientTests {
         assertEquals("I am sending this file.", new String(server.content));
 
         file.delete();
+
+        File resultFile = new File("resultFile.java");
+        assertTrue(resultFile.exists(), "Result file does not exist");
+        resultFile.delete();
     }
 
     private File createTestFile(String name, String content) throws IOException {

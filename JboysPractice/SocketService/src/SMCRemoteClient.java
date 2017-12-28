@@ -5,7 +5,7 @@ public class SMCRemoteClient {
     private String itsFilename;
     private long itsFileLength;
 
-    private BufferedReader socketsInputStream;
+    private ObjectInputStream socketsInputStream;
     private ObjectOutputStream socketsOutputStream;
     private BufferedReader fileReader;
 
@@ -52,12 +52,12 @@ public class SMCRemoteClient {
         boolean connectionStatus;
         try {
             Socket socket = new Socket("localhost", 9000);
-            socketsInputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            socketsInputStream = new ObjectInputStream(socket.getInputStream());
             socketsOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            String headerLine = socketsInputStream.readLine();
+            String headerLine = (String) socketsInputStream.readObject();
             connectionStatus = headerLine != null && headerLine.startsWith("SMCR");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             connectionStatus = false;
         }
@@ -65,7 +65,7 @@ public class SMCRemoteClient {
     }
 
     public boolean compileFile() {
-        boolean fileSent = false;
+        boolean fileCompiled = false;
         char buffer[] = new char[(int) itsFileLength];
         try {
             fileReader.read(buffer);
@@ -73,10 +73,15 @@ public class SMCRemoteClient {
                     new CompileFileTransaction(itsFilename, buffer);
             socketsOutputStream.writeObject(compileFileTransaction);
             socketsOutputStream.flush();
-            fileSent = true;
+
+            Object response = socketsInputStream.readObject();
+            CompilerResultsTransaction compilerResultsTransaction = (CompilerResultsTransaction) response;
+            compilerResultsTransaction.write();
+
+            fileCompiled = true;
         } catch (Exception ex) {
-            fileSent = false;
+            fileCompiled = false;
         }
-        return fileSent;
+        return fileCompiled;
     }
 }
