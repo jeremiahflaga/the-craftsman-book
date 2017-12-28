@@ -1,4 +1,6 @@
-public class CompileFileTransaction {
+import java.io.Serializable;
+
+public class CompileFileTransaction implements Serializable {
     private final String filename;
     private final char[] buffer;
 

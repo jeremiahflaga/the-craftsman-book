@@ -79,14 +79,4 @@ public class SMCRemoteClient {
         }
         return fileSent;
     }
-
-    private void writeSendFileCommand() throws IOException {
-        socketsOutputStream.writeObject("Sending");
-        socketsOutputStream.writeObject(itsFilename);
-        socketsOutputStream.writeLong(itsFileLength);
-        char buffer[] = new char[(int) itsFileLength];
-        fileReader.read(buffer);
-        socketsOutputStream.writeObject(buffer);
-        socketsOutputStream.flush();
-    }
 }

@@ -19,19 +19,18 @@ public class TestSMCRServer implements SocketServer {
             //inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             outputStream.println("SMCR Test Server");
             outputStream.flush();
-            String cmd = (String) inputStream.readObject();
-            parse(cmd);
-            //socket.close();
+            parse(inputStream.readObject());
         } catch (Exception e) {
         }
     }
 
-    private void parse(String cmd) throws Exception {
+    private void parse(Object cmd) throws Exception {
         if (cmd != null) {
-            if (cmd.equals("Sending")) {
-                filename = (String) inputStream.readObject();
-                fileLength = inputStream.readLong();
-                content = (char[]) inputStream.readObject();
+            if (cmd instanceof CompileFileTransaction) {
+                CompileFileTransaction compileFileTransaction = (CompileFileTransaction) cmd;
+                filename = compileFileTransaction.getFilename();
+                content = compileFileTransaction.getContents();
+                fileLength = content.length;
                 fileReceived = true;
             }
         }
