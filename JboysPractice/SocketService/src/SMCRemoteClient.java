@@ -1,10 +1,13 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 public class SMCRemoteClient {
     private String itsFilename;
     private long itsFileLength;
+
+    private BufferedReader socketsInputStream;
+    private PrintWriter socketsOutputStream;
+    private BufferedReader fileReader;
 
     public boolean parseCommandLine(String[] args) {
         try {
@@ -24,13 +27,21 @@ public class SMCRemoteClient {
     }
 
     public boolean prepareFile() {
+        boolean filePrepared = false;
         File file = new File(itsFilename);
         if (file.exists()) {
-            itsFileLength = file.length();
-            return true;
-        } else {
-            return false;
+            try {
+                itsFileLength = file.length();
+                fileReader = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(file)));
+                filePrepared = true;
+            } catch (FileNotFoundException ex) {
+                filePrepared = false;
+                ex.printStackTrace();
+            }
         }
+
+        return filePrepared;
     }
 
     public long getFileLength() {
@@ -38,15 +49,39 @@ public class SMCRemoteClient {
     }
 
     public boolean connect() {
+        boolean connectionStatus;
         try {
-            Socket s = new Socket("localhost", 9000);
-            return true;
+            Socket socket = new Socket("localhost", 9000);
+            socketsInputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            socketsOutputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+            String headerLine = socketsInputStream.readLine();
+            connectionStatus = headerLine != null && headerLine.startsWith("SMCR");
         } catch (IOException e) {
+            e.printStackTrace();
+            connectionStatus = false;
         }
-        return false;
+        return connectionStatus;
     }
 
     public boolean sendFile() {
-        return false;
+        boolean fileSent = false;
+        try {
+            writeSendFileCommand();
+            fileSent = true;
+        } catch (Exception ex) {
+            fileSent = false;
+        }
+        return fileSent;
+    }
+
+    private void writeSendFileCommand() throws IOException {
+        socketsOutputStream.println("Sending");
+        socketsOutputStream.println(itsFilename);
+        socketsOutputStream.println(itsFileLength);
+        char buffer[] = new char[(int) itsFileLength];
+        fileReader.read(buffer);
+        socketsOutputStream.write(buffer);
+        socketsOutputStream.flush();
     }
 }

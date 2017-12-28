@@ -50,9 +50,10 @@ public class SMCRemoteClientTests {
 
     @Test
     public void testCountBytesInFile() throws Exception {
-        createTestFile("testFile", "some text");
+        File file = createTestFile("testFile", "some text");
         client.setFilename("testfile");
         boolean prepared = client.prepareFile();
+        file.delete();
 
         assertTrue(prepared);
         assertEquals(9, client.getFileLength());
@@ -72,8 +73,15 @@ public class SMCRemoteClientTests {
         assertTrue(client.connect());
         assertTrue(client.prepareFile());
         assertTrue(client.sendFile());
-        assertTrue(server.fileReceived);
 
+        Thread.sleep(50);
+
+        assertTrue(server.fileReceived);
+        assertEquals("testSendFile", server.filename);
+        assertEquals(23, server.fileLength);
+        assertEquals("I am sending this file.", new String(server.content));
+
+        file.delete();
     }
 
     private File createTestFile(String name, String content) throws IOException {
