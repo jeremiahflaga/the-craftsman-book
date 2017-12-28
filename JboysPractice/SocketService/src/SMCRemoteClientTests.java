@@ -1,3 +1,6 @@
+import com.sun.javadoc.ThrowsTag;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,7 +13,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SMCRemoteClientTests {
 
     private static final int SMCPORT = 9000;
-    SMCRemoteClient client = new SMCRemoteClient();
+    SMCRemoteClient client;
+    TestSMCRServer server;
+    SocketService smc;
+
+    @BeforeEach
+    public void setup() throws Exception {
+        client = new SMCRemoteClient();
+        server = new TestSMCRServer();
+        smc = new SocketService(SMCPORT, server);
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        smc.close();
+    }
 
     @Test
     public void testParseCommandLine() throws Exception {
@@ -33,11 +50,7 @@ public class SMCRemoteClientTests {
 
     @Test
     public void testCountBytesInFile() throws Exception {
-        File file = new File("testFile");
-        FileOutputStream stream = new FileOutputStream(file);
-        stream.write("some text".getBytes());
-        stream.close();
-
+        createTestFile("testFile", "some text");
         client.setFilename("testfile");
         boolean prepared = client.prepareFile();
 
@@ -47,17 +60,27 @@ public class SMCRemoteClientTests {
 
     @Test
     public void testConnectionToSMCRemoteServer() throws Exception {
-        SocketServer server = new SocketServer() {
-            @Override
-            public void serve(Socket socket) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                }
-            }
-        };
-        SocketService smc = new SocketService(SMCPORT, server);
         boolean connection = client.connect();
         assertTrue(connection);
+    }
+
+    @Test
+    public void testSendFile() throws Exception {
+        File file = createTestFile("testSendFile", "I am sending this file.");
+        client.setFilename("testSendFile");
+
+        assertTrue(client.connect());
+        assertTrue(client.prepareFile());
+        assertTrue(client.sendFile());
+        assertTrue(server.fileReceived);
+
+    }
+
+    private File createTestFile(String name, String content) throws IOException {
+        File file = new File(name);
+        FileOutputStream stream = new FileOutputStream(file);
+        stream.write(content.getBytes());
+        stream.close();
+        return file;
     }
 }

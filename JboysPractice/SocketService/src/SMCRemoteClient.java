@@ -45,4 +45,8 @@ public class SMCRemoteClient {
         }
         return false;
     }
+
+    public boolean sendFile() {
+        return false;
+    }
 }
