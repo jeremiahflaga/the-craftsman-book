@@ -1,8 +1,9 @@
-import javax.sound.sampled.Port;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SocketService {
     private ServerSocket serverSocket = null;
@@ -10,6 +11,7 @@ public class SocketService {
     private boolean running = false;
     private SocketServer itsServer;
     private List<Thread> serverThreads = Collections.synchronizedList(new LinkedList<>());
+    private List<Socket> sockets = Collections.synchronizedList(new LinkedList<>());
 
     public SocketService() {}
 
@@ -52,6 +54,7 @@ public class SocketService {
     private void acceptAndServeConnection() {
         try {
             Socket socket = serverSocket.accept();
+            sockets.add(socket);
             Thread serverThread = new Thread(new ServiceRunnable(socket));
             serverThreads.add(serverThread);
             serverThread.start();
@@ -62,7 +65,7 @@ public class SocketService {
     public void close() throws Exception {
         if (running) {
             running = false;
-            serverSocket.close();
+            closeServerSocket();
 
             serverThread.join();
             while (serverThreads.size() > 0) {
@@ -71,8 +74,15 @@ public class SocketService {
                 thread.join();
             }
         } else {
-            serverSocket.close();
+            closeServerSocket();
         }
+    }
+
+    private void closeServerSocket() throws IOException {
+        serverSocket.close();
+
+        for (Socket socket : sockets)
+            socket.close();
     }
 
     private class ServiceRunnable implements Runnable {
