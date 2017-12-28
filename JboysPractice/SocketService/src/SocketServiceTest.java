@@ -66,6 +66,9 @@ class SocketServiceTest {
 
         printStream.println("MyMessage");
         String answer = bufferedReader.readLine();
+
+        assertEquals("MyMessage", answer);
+
         socket.close();
     }
 
