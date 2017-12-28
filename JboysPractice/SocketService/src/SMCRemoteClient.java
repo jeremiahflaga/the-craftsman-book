@@ -6,7 +6,7 @@ public class SMCRemoteClient {
     private long itsFileLength;
 
     private BufferedReader socketsInputStream;
-    private PrintWriter socketsOutputStream;
+    private ObjectOutputStream socketsOutputStream;
     private BufferedReader fileReader;
 
     public boolean parseCommandLine(String[] args) {
@@ -53,7 +53,7 @@ public class SMCRemoteClient {
         try {
             Socket socket = new Socket("localhost", 9000);
             socketsInputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            socketsOutputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            socketsOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             String headerLine = socketsInputStream.readLine();
             connectionStatus = headerLine != null && headerLine.startsWith("SMCR");
@@ -76,12 +76,12 @@ public class SMCRemoteClient {
     }
 
     private void writeSendFileCommand() throws IOException {
-        socketsOutputStream.println("Sending");
-        socketsOutputStream.println(itsFilename);
-        socketsOutputStream.println(itsFileLength);
+        socketsOutputStream.writeObject("Sending");
+        socketsOutputStream.writeObject(itsFilename);
+        socketsOutputStream.writeLong(itsFileLength);
         char buffer[] = new char[(int) itsFileLength];
         fileReader.read(buffer);
-        socketsOutputStream.write(buffer);
+        socketsOutputStream.writeObject(buffer);
         socketsOutputStream.flush();
     }
 }

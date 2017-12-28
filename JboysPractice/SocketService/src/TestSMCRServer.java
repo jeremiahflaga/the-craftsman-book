@@ -9,29 +9,29 @@ public class TestSMCRServer implements SocketServer {
     public String command;
 
     private PrintStream outputStream;
-    private BufferedReader inputStream;
+    private ObjectInputStream inputStream;
 
     @Override
     public void serve(Socket socket) {
         try {
             outputStream = new PrintStream(socket.getOutputStream());
-            inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            inputStream = new ObjectInputStream(socket.getInputStream());
+            //inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             outputStream.println("SMCR Test Server");
             outputStream.flush();
-            String cmd = inputStream.readLine();
+            String cmd = (String) inputStream.readObject();
             parse(cmd);
             //socket.close();
         } catch (Exception e) {
         }
     }
 
-    private void parse(String cmd) throws IOException {
+    private void parse(String cmd) throws Exception {
         if (cmd != null) {
             if (cmd.equals("Sending")) {
-                filename = inputStream.readLine();
-                fileLength = Long.parseLong(inputStream.readLine());
-                content = new char[(int)fileLength];
-                inputStream.read(content, 0, (int)fileLength);
+                filename = (String) inputStream.readObject();
+                fileLength = inputStream.readLong();
+                content = (char[]) inputStream.readObject();
                 fileReceived = true;
             }
         }
