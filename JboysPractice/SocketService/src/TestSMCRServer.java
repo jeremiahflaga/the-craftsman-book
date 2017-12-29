@@ -32,7 +32,7 @@ public class TestSMCRServer implements SocketServer {
                 content = compileFileTransaction.getContents();
                 fileLength = content.length;
                 fileReceived = true;
-
+                TestSMCRemoteClient.createTestFile("resultFile.java", "Some content.");
                 CompilerResultsTransaction compilerResultsTransaction =
                         new CompilerResultsTransaction("resultFile.java");
                 outputStream.writeObject(compilerResultsTransaction);
