@@ -1,16 +1,13 @@
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 
 public class CompilerResultsTransaction implements Serializable {
-    private String filename;
+    private FileCarrier resultFile;
 
-    public CompilerResultsTransaction(String filename) {
-        this.filename = filename;
+    public CompilerResultsTransaction(String filename) throws Exception {
+        resultFile = new FileCarrier(filename);
     }
 
     public void write() throws Exception {
-        File resultFile = new File(filename);
-        resultFile.createNewFile();
+        resultFile.write();
     }
 }
