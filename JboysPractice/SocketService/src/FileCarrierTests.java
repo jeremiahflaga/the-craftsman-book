@@ -27,22 +27,6 @@ public class FileCarrierTests {
 
         originalFile.delete();
         renamedOriginal.delete();
-
-
-
-//        final String TESTFILE = "testFile.txt";
-//        final String TESTSTRING = "test";
-//
-//        createFile(TESTFILE, TESTSTRING);
-//
-//        FileCarrier fileCarrier = new FileCarrier(TESTFILE);
-//        new File(TESTFILE).delete();
-//        fileCarrier.write();
-//
-//        assertTrue(new File(TESTFILE).exists());
-//
-//        String contents = readFile(TESTFILE);
-//        assertEquals(TESTSTRING, contents);
     }
 
     private boolean filesAreTheSame(File file1, File file2) throws Exception {
@@ -85,16 +69,95 @@ public class FileCarrierTests {
         assertTrue(file.exists() == false);
     }
 
-//    private String readFile(final String TESTFILE) throws IOException {
-//        BufferedReader reader = new BufferedReader(new FileReader(TESTFILE));
-//        String line = reader.readLine();
-//        return line;
-//    }
-//
-//    private void createFile(final String TESTFILE,
-//                            final String TESTSTRING) throws IOException {
-//        PrintWriter writer = new PrintWriter(new FileWriter(TESTFILE));
-//        writer.println(TESTSTRING);
-//        writer.close();
-//    }
+
+    private abstract class FileComparator {
+        abstract void writeFirstFile(PrintWriter w);
+        abstract void writeSecondFile(PrintWriter w);
+
+        void compare(boolean expected) throws Exception {
+            File f1 = new File("f1");
+            File f2 = new File("f2");
+            PrintWriter w1 = new PrintWriter(new FileWriter(f1));
+            PrintWriter w2 = new PrintWriter(new FileWriter(f2));
+            writeFirstFile(w1);
+            writeSecondFile(w2);
+            w1.close();
+            w2.close();
+            assertEquals(expected, filesAreTheSame(f1, f2), "(f1,f2)");
+            assertEquals(expected, filesAreTheSame(f2, f1), "(f2,f1)");
+            f1.delete();
+            f2.delete();
+        }
+    }
+
+    @Test
+    public void testOneFileLongerThanTheOther() throws Exception {
+        FileComparator c = new FileComparator() {
+            void writeFirstFile(PrintWriter w) {
+                w.println("hi there");
+            }
+            void writeSecondFile(PrintWriter w) {
+                w.println("hi there you");
+            }
+        };
+        c.compare(false);
+    }
+
+    @Test
+    public void testFilesAreDifferentInTheMiddle() throws Exception {
+        FileComparator c = new FileComparator() {
+            void writeFirstFile(PrintWriter w) {
+                w.println("hi there");
+            }
+            void writeSecondFile(PrintWriter w) {
+                w.println("hi their");
+            }
+        };
+        c.compare(false);
+    }
+
+    @Test
+    public void testSecondLineDifferent() throws Exception {
+        FileComparator c = new FileComparator() {
+            void writeFirstFile(PrintWriter w) {
+                w.println("hi there");
+                w.println("This is fun");
+            }
+            void writeSecondFile(PrintWriter w) {
+                w.println("hi there");
+                w.println("This isn't fun");
+            }
+        };
+        c.compare(false);
+    }
+
+    @Test
+    public void testFilesSame() throws Exception {
+        FileComparator c = new FileComparator() {
+            void writeFirstFile(PrintWriter w) {
+                w.println("hi there");
+            }
+            void writeSecondFile(PrintWriter w) {
+                w.println("hi there");
+            }
+        };
+        c.compare(true);
+    }
+
+    @Test
+    public void testMultipleLinesSame() throws Exception {
+        FileComparator c = new FileComparator() {
+            void writeFirstFile(PrintWriter w) {
+                w.println("hi there");
+                w.println("this is fun");
+                w.println("Lots of fun");
+            }
+            void writeSecondFile(PrintWriter w) {
+                w.println("hi there");
+                w.println("this is fun");
+                w.println("Lots of fun");
+            }
+        };
+        c.compare(true);
+    }
 }
