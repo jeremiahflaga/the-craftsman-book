@@ -1,28 +1,38 @@
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.Serializable;
+import java.io.*;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class FileCarrier implements Serializable {
     private String fileName;
+    private LinkedList<String> lines = new LinkedList();
     private char[] contents;
 
     public FileCarrier(String fileName) throws Exception {
-        File f = new File(fileName);
         this.fileName = fileName;
+        loadLines();
+    }
 
-        int fileSize = (int)f.length();
-        contents = new char[fileSize];
-
-        FileReader reader = new FileReader(f);
-        reader.read(contents);
+    private void loadLines() throws IOException {
+        BufferedReader reader = makeBufferedReader();
+        String line;
+        while ((line = reader.readLine()) != null)
+            lines.add(line);
         reader.close();
     }
 
+    private BufferedReader makeBufferedReader() throws FileNotFoundException {
+        return new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+    }
+
     public void write() throws Exception {
-        FileWriter writer = new FileWriter(fileName);
-        writer.write(contents);
-        writer.close();
+        PrintStream printStream = makePrintStream();
+        for (Iterator iterator = lines.iterator(); iterator.hasNext(); )
+            printStream.println((String) iterator.next());
+        printStream.close();
+    }
+
+    private PrintStream makePrintStream() throws FileNotFoundException {
+        return new PrintStream(new FileOutputStream(fileName));
     }
 
     public String getFileName() {
@@ -30,6 +40,7 @@ public class FileCarrier implements Serializable {
     }
 
     public char[] getContents() {
-        return contents;
+        //NOTE: this is temporary
+        return lines.get(0).toCharArray();
     }
 }
