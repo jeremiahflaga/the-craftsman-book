@@ -14,6 +14,7 @@ public class FileCarrierTests {
         createFile(TESTFILE, TESTSTRING);
 
         FileCarrier fileCarrier = new FileCarrier(TESTFILE);
+        new File(TESTFILE).delete();
         fileCarrier.write();
 
         assertTrue(new File(TESTFILE).exists());
