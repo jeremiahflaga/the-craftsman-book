@@ -94,4 +94,22 @@ public class SMCRemoteClient {
         for (Socket socket : sockets)
             socket.close();
     }
+
+    public static void main(String[] args) throws Exception {
+        SMCRemoteClient client = new SMCRemoteClient();
+        client.setFilename(args[0]);
+        if (client.prepareFile())
+            if (client.connect())
+                if (client.compileFile())
+                    client.close();
+                else { // compileFile
+                    System.out.println("failed to compile");
+                }
+            else { // connect
+                System.out.println("failed to connect");
+            }
+        else { // prepareFile
+            System.out.println("failed to prepare");
+        }
+    }
 }

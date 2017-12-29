@@ -95,4 +95,15 @@ public class SMCRemoteClientTests {
         stream.close();
         return file;
     }
+
+    @Test
+    public void testMain() throws Exception {
+        File file = createTestFile("myFile.sm", "the content");
+        SMCRemoteClient.main(new String[]{"myFile.sm"});
+        file.delete();
+
+        File resultFile = new File("resultFile.java");
+        assertTrue(resultFile.exists());
+        resultFile.delete();
+    }
 }
