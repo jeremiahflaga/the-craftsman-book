@@ -35,7 +35,7 @@ public class TestSMCRServer implements SocketServer {
 
                 CompilerResultsTransaction compilerResultsTransaction =
                         new CompilerResultsTransaction("resultFile.java");
-                outputStream.writeObject(compileFileTransaction);
+                outputStream.writeObject(compilerResultsTransaction);
                 outputStream.flush();
             }
         }
