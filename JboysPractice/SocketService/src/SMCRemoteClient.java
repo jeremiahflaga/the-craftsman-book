@@ -1,5 +1,8 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SMCRemoteClient {
     private String itsFilename;
@@ -8,6 +11,8 @@ public class SMCRemoteClient {
     private ObjectInputStream socketsInputStream;
     private ObjectOutputStream socketsOutputStream;
     private BufferedReader fileReader;
+
+    private List<Socket> sockets = Collections.synchronizedList(new LinkedList<>());
 
     public boolean parseCommandLine(String[] args) {
         try {
@@ -52,6 +57,8 @@ public class SMCRemoteClient {
         boolean connectionStatus;
         try {
             Socket socket = new Socket("localhost", 9000);
+            sockets.add(socket);
+
             socketsInputStream = new ObjectInputStream(socket.getInputStream());
             socketsOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
@@ -83,5 +90,10 @@ public class SMCRemoteClient {
             fileCompiled = false;
         }
         return fileCompiled;
+    }
+
+    public void close() throws Exception {
+        for (Socket socket : sockets)
+            socket.close();
     }
 }

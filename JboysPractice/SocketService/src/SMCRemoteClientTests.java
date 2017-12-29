@@ -26,6 +26,7 @@ public class SMCRemoteClientTests {
     @AfterEach
     public void tearDown() throws Exception {
         smc.close();
+        client.close();
     }
 
     @Test
