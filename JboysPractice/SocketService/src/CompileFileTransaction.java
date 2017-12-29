@@ -1,19 +1,17 @@
 import java.io.Serializable;
 
 public class CompileFileTransaction implements Serializable {
-    private final String filename;
-    private final char[] buffer;
+    FileCarrier sourceFile;
 
-    public CompileFileTransaction(String filename, char[] buffer) {
-        this.filename = filename;
-        this.buffer = buffer;
+    public CompileFileTransaction(String filename) throws Exception {
+        sourceFile = new FileCarrier(filename);
     }
 
     public String getFilename() {
-        return filename;
+        return sourceFile.getFileName();
     }
 
     public char[] getContents() {
-        return buffer;
+        return sourceFile.getContents();
     }
 }

@@ -73,11 +73,9 @@ public class SMCRemoteClient {
 
     public boolean compileFile() {
         boolean fileCompiled = false;
-        char buffer[] = new char[(int) itsFileLength];
         try {
-            fileReader.read(buffer);
             CompileFileTransaction compileFileTransaction =
-                    new CompileFileTransaction(itsFilename, buffer);
+                    new CompileFileTransaction(itsFilename);
             socketsOutputStream.writeObject(compileFileTransaction);
             socketsOutputStream.flush();
 
