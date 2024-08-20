@@ -12,10 +12,11 @@ public class SocketService
 {
     private Socket serverSocket = null;
     private Thread serverThread = null;
+    private bool running = false;
 
-    public int Connections { get; private set; } = 0;
+    //public int Connections { get; private set; } = 0;
 
-    public void Serve(int port)
+    public void Serve(int port, SocketServer socketServer)
     {
         //IPHostEntry host = Dns.GetHostEntry("localhost");
         //// This is the IP address of the local machine
@@ -36,19 +37,24 @@ public class SocketService
 
         serverSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
         serverSocket.Bind(new IPEndPoint(IPAddress.Loopback, port));
-        serverSocket.Listen();
+        serverSocket.Listen(10);
 
         serverThread = new Thread(() =>
         {
-            var handler = serverSocket.Accept();
-            serverSocket.Close();
-            Connections++;
+            running = true;
+            while (running)
+            {
+                Socket clientSocket = serverSocket.Accept();
+                socketServer.Serve(clientSocket);
+                clientSocket.Close();
+            }
         });
         serverThread.Start();
     }
 
     public void Close()
     {
+        running = false;
         serverSocket.Close();
     }
 }
