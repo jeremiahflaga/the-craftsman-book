@@ -8,13 +8,19 @@ namespace SocketService.Tests;
 
 public class UnitTest1
 {
+    private ConnectionCounterSocketServer connectionCounter;
+
+    public UnitTest1()
+    {
+        connectionCounter = new ConnectionCounterSocketServer();
+    }
+
     // NOTE: using different ports in each test
     // else you will get this error: Only one usage of each socket address (protocol/network address/port) is normally permitted
 
     [Fact]
     public void testOneConnection()
     {
-        var connectionCounter = new ConnectionCounterSocketServer();
         SocketService ss = new SocketService();
         ss.Serve(777, connectionCounter);
         Connect(777);
@@ -25,10 +31,9 @@ public class UnitTest1
     [Fact]
     public void testManyConnections()
     {
-        var connectionCounter = new ConnectionCounterSocketServer();
         SocketService ss = new SocketService();
         ss.Serve(999, connectionCounter);
-        for (int i = 0; i< 10; i++)
+        for (int i = 0; i < 10; i++)
             Connect(999);
         ss.Close();
         Assert.Equal(10, connectionCounter.Connections);
