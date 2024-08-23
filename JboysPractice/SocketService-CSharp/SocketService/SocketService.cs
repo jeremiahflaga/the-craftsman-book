@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -29,9 +30,11 @@ public class SocketService
             while (running)
             {
                 Socket clientSocket = serverSocket.Accept();
-                socketServer.Serve(clientSocket);
-                clientSocket.Shutdown(SocketShutdown.Both);
-                clientSocket.Close();
+                new Thread(() => {
+                    socketServer.Serve(clientSocket);
+                    clientSocket.Shutdown(SocketShutdown.Both);
+                    clientSocket.Close();
+                }).Start();
             }
         });
         serverThread.Start();
@@ -42,5 +45,6 @@ public class SocketService
         running = false;
         //serverSocket.Shutdown(SocketShutdown.Both);
         //serverSocket.Close();
+        var threadSafeArrayList = ArrayList.Synchronized(new ArrayList());
     }
 }
