@@ -3,14 +3,15 @@
 
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace SocketService.Tests;
 
-public class UnitTest1
+public class SocketServiceTests
 {
     private ConnectionCounterSocketServer connectionCounter;
 
-    public UnitTest1()
+    public SocketServiceTests()
     {
         connectionCounter = new ConnectionCounterSocketServer();
     }
@@ -24,7 +25,7 @@ public class UnitTest1
         SocketService ss = new SocketService();
         ss.Serve(777, connectionCounter);
         Connect(777);
-        //ss.Close();
+        ss.Close();
         Assert.Equal(1, connectionCounter.Connections);
     }
 
@@ -48,37 +49,30 @@ public class UnitTest1
         using var clientSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
         clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, 888));
 
-        //Thread.Sleep(100);
-        var networkStream = new NetworkStream(clientSocket, FileAccess.Read);
-        var streamReader = new StreamReader(networkStream);
-        var answer = streamReader.ReadToEnd();
+        //var networkStream = new NetworkStream(clientSocket, FileAccess.Read);
+        //var streamReader = new StreamReader(networkStream);
+        //var answer = streamReader.ReadToEnd();
 
+        byte[] buffer = new byte[1024]; // Create a buffer to hold the received data
+        int bytesReceived = clientSocket.Receive(buffer); // Receive data from the server
+
+        clientSocket.Shutdown(SocketShutdown.Both);
         clientSocket.Close();
+        var answer = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
 
         Assert.Equal("Hello", answer);
     }
 
     private void Connect(int port)
     {
+        using var clientSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
         try
         {
-            //IPHostEntry host = Dns.GetHostEntry("localhost");
-            //// This is the IP address of the local machine
-            //IPAddress ipAddress = host.AddressList[0];
-            //Socket s = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-            //IPEndPoint ipEndPoint = new(ipAddress, port);
-            //s.Connect(ipEndPoint);
-
-            //Thread.Sleep(100);
-
-            //s.Close();
-
-            using var clientSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
             clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, port));
 
             Thread.Sleep(100);
 
+            clientSocket.Shutdown(SocketShutdown.Both);
             clientSocket.Close();
         }
         catch (Exception ex)
@@ -103,8 +97,14 @@ internal class HelloServer : SocketServer
     public void Serve(Socket s)
     {
         var networkStream = new NetworkStream(s, FileAccess.Write);
-        var streamWriter = new StreamWriter(networkStream);
-        streamWriter.Write("Hello");
-        streamWriter.Flush();
+        //var streamWriter = new StreamWriter(networkStream);
+        //streamWriter.Write("Hello");
+        //streamWriter.Flush();
+
+        // Encode the data string into a byte array and send it
+        string dataToSend = "Hello"; // The data you want to send
+        byte[] byteData = Encoding.ASCII.GetBytes(dataToSend);
+
+        s.Send(byteData);
     }
 }
