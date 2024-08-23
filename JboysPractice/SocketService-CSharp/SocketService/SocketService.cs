@@ -41,6 +41,6 @@ public class SocketService
     {
         running = false;
         //serverSocket.Shutdown(SocketShutdown.Both);
-        serverSocket.Close();
+        //serverSocket.Close();
     }
 }
